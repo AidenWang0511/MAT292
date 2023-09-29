@@ -62,14 +62,14 @@ x(2)
 % Only include the error message as a comment (with the percent signs), DO NOT 
 % INCLUDE THE CODE IN YOUR SUBMISSION.
 %% Plotting a Vector
-% Given a list (one dimensional array) of values we can plot them with the command 
+% Given a list (one dimensional array) of values we can plot them with the command  
 % |plot(x)|, with or without a semicolon. This will plot the points in the data 
 % set |(i, x(i))|.
 
 plot(x)
 %% Plotting Vector x against Vector y
 % To plot functions, we need two vectors: a set of x points and a corresponding 
-% set of y points. We now create a vector |y| and plot x against y with the command 
+% set of y points. We now create a vector |y| and plot x against y with the command  
 % |plot(x,y)|.
 % 
 % If the two vectors are not the same size, MATLAB will throw an error.
@@ -126,7 +126,7 @@ for j = 1:N
 end
 disp(x);
 %% Plotting y = x^2
-% As a first example of plotting a function, we plot y = x^2. Using the array 
+% As a first example of plotting a function, we plot y = x^2. Using the array  
 % |x| created in the last step, we populate a vector |y| such that |y(i) = x(i)^2| 
 % and plot it.
 
@@ -142,7 +142,7 @@ plot(x,y)
 %% Plotting y = sin(2 * pi * x)
 % MATLAB has a number of built in functions including the trigonometric functions 
 % (sin, cos, arccos,...), the exponential functions (exp), the natural logarithm 
-% function (log), hyperbolic functions (sinh, cosh), and others. The constant 
+% function (log), hyperbolic functions (sinh, cosh), and others. The constant  
 % |pi| is also defined. For a full list of built in functions type |help elfun| 
 % at the MATLAB command line.
 % 
@@ -172,14 +172,13 @@ x = zeros(1,N);     %This creates a row vector with N or 101 values for X-axis
 y = zeros(1,N);     %This creates a row vector with 101 values for Y-axis
 
 for j = 1:N
-    x(j) = (j-1) * h;   %Populate X with the desired values
+    x(j) = (-3) + (j-1) * h;   %Populate X with the desired values
     y(j) = abs(x(j)) * x(j);    %Populate the corresponding Y values
 end
 
 plot(x,y)   %Plot x against y
-
 %% Plotting Two Data Sets at Once
-% We can also plot the preceding two examples on the same figure with the command 
+% We can also plot the preceding two examples on the same figure with the command  
 % |plot(x, y, x, z)|. MATLAB will automatically put a different color on each 
 % line.
 
@@ -267,7 +266,8 @@ legend('x^2', 'sin(2*pi*x)','Location','SouthWest');
 
 clear y;    %Clear the y array
 tic;        %Begin timing the construciton and filling of the array
-
+N;
+x = zeros(N,1);
 y = zeros(N,1);
 
 for j = 1:N
@@ -285,13 +285,13 @@ toc;
 % 
 % Details: Create a vector |x| of 5000001 equally space points between -2 and 
 % 3, inclusive, using a for loop. Then time the construction of vector |y|, whose 
-% values are arctan of x, by a for loop and by vectorization. Be sure to clear 
+% values are arctan of x, by a for loop and by vectorization. Be sure to clear  
 % |y| between the two runs. (Hint: use the help file to find the command for arctan!)
 % 
 % Your submission should include the code, as in the example, with appropriate 
 % comments.
 
-clear y;
+clear y;        %Clear y to time the entire process again
 N = 5000001;             %This helps to create 5000001 points
 h = (3-(-2))/(N-1); %This finds the difference between 2 adjacent values
 x = zeros(1,N);     %This creates a row vector x with N values
@@ -306,7 +306,17 @@ y = zeros(1,N);     %This creates a row vector y with N values
 for j = 1:N
     y(j) = atan(x(j));   %Populate y with the desired values
 end
-y_time = toc;
+y_time1 = toc;      %obtain the total time to construct y using for loop
+
+clear y;        %Clear y to time the entire process again
+tic;
+y = zeros(1,N);     %This creates a row vector y with N values
+y = atan(x);        %Populate y using vectorization 
+y_time2 = toc;  %obtain the total time to construct y using vectorization
+
+speed_ratio = y_time1 / y_time2; 
+%After multiple runs, oserved a speed ratio around 6,7
+
 %% Further Avoiding Loops with linspace
 % In the preceding examples, we will focus on the vector |x|, which was constructed 
 % with a |for| loop. MATLAB includes a routine for creating a vector of a given 
@@ -356,6 +366,31 @@ legend('x-x^3', 'exp(x)','Location','SouthWest');
 % Your submission should include, in the description section, the general solution 
 % of the ODE and the three particular solutions. It should also have the appropriately 
 % commented code.
+
+% general solution:
+% y = (c + t) / (exp(t^2))
+% particular solution when y(1) = -1
+% y = (-exp(1) - 1 + t) / (exp(t^2))
+% Particular solution when y(1) = 0
+% y = (-1 + t) / (exp(t^2))
+% Particular solution when y(1) = 1
+% y = (exp(1) - 1 + t) / (exp(t^2))
+
+clear all;
+
+t = linspace(1,5,100);      %Create the vector for independent variable
+y1 = (-exp(1) - 1 + t) ./ (exp(t.^2));      %solution vector when y(1) = -1 
+y2 = (-1 + t) ./ (exp(t.^2));           %solution vector when y(1) = 0
+y3 = (exp(1) - 1 + t) ./ (exp(t.^2));       %solution vector when y(1) = 1
+
+plot(t,y1,t,y2,t,y3); %Plot all 3 particular solutions on 1 graph
+
+%Change graph labels
+xlabel('t');
+ylabel('y(t)');
+title('Particular Solutions of dy/dt + (2*t)*y = 1/exp(t^2)');
+legend('y(1) = -1', 'y(1) = 0','y(1) = 1','Location','northeast');
+title(legend, 'Initial Conditions');
 %% More Plotting Examples - Line Style
 % There are many plotting options available, including color, line style, and 
 % marker style. Some options can be found from the |help plot| command. This is 
@@ -442,6 +477,23 @@ ylabel('g');
 % 
 % Your submission should show the definition of the function, and the computation 
 % of these values.
+
+%Define an inline function f
+f = @(x) (x.^3 - abs(x)) .* log(x.^2 + 1);
+
+fprintf(' f(%g) = %g\n', 0, f(0));      %Compute and print f(0)
+fprintf(' f(%g) = %g\n', 1, f(1));      %Compute and print f(1)
+fprintf(' f(%g) = %g\n', -1, f(-1));    %Compute and print f(-1)
+
+x = linspace(-5,5,100); %Create the vector for independent variable
+
+%Plot f(x)
+plot(x,f(x));
+
+%Change graph labels
+title('Graph of f(x)')
+xlabel('x');
+ylabel('f(x)');
 %% Inline functions of two variables
 % Suppose we wish to solve the equation
 % 
@@ -493,6 +545,19 @@ h(2, 2)
 % 
 % Your submission should show the definition of the function, and the computation 
 % of these values.
+
+%Define an inline function f
+f = @(x,y) (y + y.^3 - cos(x) + x.^2 - x.^4);
+
+%Compute and print f(0,0) f(pi/2,1) f(-1,-1)
+x = 0; y = 0;
+fprintf(' f(x = %g, y = %g) = %g\n', x, y, f(x, y));
+x = (pi/2); y = 1;
+
+fprintf(' f(x = %g, y = %g) = %g\n', x, y, f(x, y));
+x = -1; y = -1;
+
+fprintf(' f(x = %g, y = %g) = %g\n', x, y, f(x, y));
 %% Numerically solving an implicit equation
 % Given |x0|, we will now solve the equation
 % 
@@ -563,13 +628,37 @@ fprintf(' y(%g) = %g\n', 2, y);
 % 
 % |f(x,y) = y + y^3 - cos x + x^2 - x^4|
 % 
-% Define the appropriate inline function and compute the single solution at 
+% Define the appropriate inline function and compute the single solution at  
 % |x = 0| and the two positive solutions at |y = 1/2|.
 % 
 % You will need to experiment with different guesses to get these three solutions.
 % 
 % Your submission should show the definition of the function, and the computation 
 % of these three roots.
+
+%Define the function
+f = @(x,y) y + y.^3 - cos(x) + x.^2 - x.^4;
+
+%for x = 0
+x0 =0;
+guess = 0.7;
+g = @(y) f(x0, y);
+y = fzero(g, guess);
+fprintf(' y(%g) = %g\n', x0, y);
+
+%for y = 1/2 (1)
+y0 = 1/2;
+guess = 1;
+g = @(x) f(x, y0);
+x = fzero(g, guess);
+fprintf(' x(%g) = %g\n', y0, x);
+
+%for y = 1/2 (2)
+y1 = 1/2;
+guess = 0.6;
+g = @(x) f(x, y1);
+x = fzero(g, guess);
+fprintf(' x(%g) = %g\n', y1, x);
 %% Plotting the solution
 % Now we are ready to plot y as a function of x. We will construct an array 
 % of x values, solve for y at each value of x, and then plot the results. This 
@@ -611,6 +700,25 @@ ylabel('y');
 % of the arrays, the for loop, and the resultant figure.
 % 
 % Label your axes.
+
+clear all;
+%Define the function, +1 to pass thru origin
+f= @(x,y) y + y.^3 - cos(x) + x.^2 - x.^4 + 1;
+
+x = linspace(-2, 2, 100); %create 100 equally spaced point from -2 to 2.
+y = zeros(size(x)); %allocate same sizes for y
+
+% Loop through all the values
+for j = 1:length(x)
+    g = @(y) f(x(j), y);
+    y(j) = fzero(g, 1);
+end
+
+%PLot and Label the Graph
+plot(x, y);
+xlabel('x');
+ylabel('y');
+title('Solution to f(x,y)');
 %% Exercise 10
 % Objective: Solve a differential equation and plot a portion of it.
 % 
@@ -629,10 +737,37 @@ ylabel('y');
 % the for loop, and the figure.
 % 
 % Label your axes.
+
+clear all;
+%General simplicit solution: 
+%       f(x,y) = C * exp(x^3 - sin(x)) - y
+%Particular solution for y(0) = 1
+%       C = 1
+%       f(x,y) = exp(x^3 - sin(x)) - y
+
+%Define the function
+f = @(x,y) exp(x.^3 - sin(x)) - y;
+
+%Create 100 equally spaced point from -1.5 to 1.25.
+x = linspace(-1.5, 1.25, 100);
+%Allocate the same space for y
+y = zeros(size(x));
+
+% Loop through all the values
+for j = 1:length(x)
+    g = @(y) f(x(j), y);
+    y(j) = fzero(g, 1);
+end
+
+%PLot and Label the Graph
+plot(x, y);
+xlabel('x');
+ylabel('y');
+title('Particular Solution to f(x,y) passing throuhg y(0) = 1');
 %% Install iode
 % Objective: install iode
 % 
-% Details: visit <https://faculty.math.illinois.edu/iode/ https://faculty.math.illinois.edu/iode/> 
+% Details: visit <https://faculty.math.illinois.edu/iode/ <https://faculty.math.illinois.edu/iode/>> 
 % and follow the instructions there to download and install iode.
 %% Exercise 11
 % Objective: use iode a plot the direction field of a differential equation
@@ -652,6 +787,28 @@ ylabel('y');
 % Describe, in words, the behaviour of the solutions. What happens as x approaches 
 % infinity? Explain why solutions are symmetric about the y-axis, i.e. |y(x)=y(-x)| 
 % for any solution.
+% 
+% Aiden Wang's response:
+% 
+% The direction field is separated by the x-axis. When the initial condition 
+% is a point above the x-axis, the direction field produces a graph similar to 
+% a parabola concaving up, and as x approaches positive/negative infinity, the 
+% y-value approaches positive infinity.
+% 
+% When the initial condition is on the x-axis, the graph is a horiztonal line 
+% at y=0
+% 
+% When the initial condition is below the x-axis, there is a symmertical dip 
+% in the graph, and both end of the plots tend to approach y=0 as x approaches 
+% +/- infinity
+% 
+% The reason why the solution are symmetric about the y-axis is the function 
+% is an even function. When sub in a positive and negative x, the resultant is 
+% a corresponding positive and negative slope with the same aboslute value. Meaning 
+% that, for every point, there's a reflected point about the y-axis that has a 
+% negative slpoe. Thus, the function is symmetric about the y-axis. 
+% 
+% 
 %% Exercise 12
 % Objective: study the long-run behaviour of a differential equation from its 
 % direction field
@@ -669,6 +826,44 @@ ylabel('y');
 % solution method from Euler to the, much better, Runge-Kutta method. Think about 
 % why solutions are not permitted to cross. If they do then this indicates a problem 
 % with the numerical solver.
+% 
+% Aiden Wang's response:
+% 
+% y(0) = 2 is an unstable equilibrium
+% 
+% y(0) = 1 is a stable equilibrium
+% 
+% y(0) = -1 is a semi-stable equilibrium
+% 
+% For y(0) > 2: 
+% 
+% As x approaches positive inifnity, y approaches positive inifity. This statement 
+% is made with the assumption that the vector field will continue follow the pattern 
+% for y>3
+% 
+% As x approaches negative inifnity, y approaches 2.
+% 
+% For 1 < y(0) < 2:
+% 
+% As x approaches positive inifnity, y approaches 1.
+% 
+% As x approaches negative inifnity, y approaches 2.
+% 
+% For -1 < y(0) < 1:
+% 
+% As x approaches positive inifnity, y approaches 1.
+% 
+% As x approaches negative inifnity, y approaches -1.
+% 
+% For y(0) < -1:
+% 
+% As x approaches positive inifnity, y approaches -1.
+% 
+% As x approaches negative inifnity, y approaches negative infinity. This statement 
+% is made with the assumption that the vector field will continue follow the pattern 
+% for y<-3
+% 
+% 
 %% Exercise 13 (NOT TO BE HANDED IN)
 % Objective: Solve a differential equation and plot the largest interval of 
 % existence for this solution.
